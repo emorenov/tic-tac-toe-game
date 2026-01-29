@@ -43,6 +43,11 @@ export async function POST() {
     const joinCode = TicTacToeLogic.generateJoinCode();
     const emptyBoard = TicTacToeLogic.createEmptyBoard();
     
+    // Determine the app URL (Vercel sets VERCEL_URL, fallback to NEXT_PUBLIC_APP_URL)
+    const appUrl = process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    
     // Create game in database
     const { data: game, error } = await supabase
       .from('games')
@@ -63,7 +68,7 @@ export async function POST() {
       );
     }
 
-    const gameUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/game/${joinCode}`;
+    const gameUrl = `${appUrl}/game/${joinCode}`;
     
     return NextResponse.json({
       message: `Game created! Share this code: ${joinCode} or link: ${gameUrl}`,
